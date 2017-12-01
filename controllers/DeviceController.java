@@ -1,5 +1,10 @@
 package app.controllers.device;
 
+/* import google GSON*/
+
+/**
+ * @author Vitor "Pliavi" Silverio
+ */
 public class DevicesController extends AppController {
 
     @GET 
@@ -37,24 +42,21 @@ public class DevicesController extends AppController {
         Device.findById(param("id")).delete();
     }
 
-    /* Switch on and off */
-    public void switchState(int id, boolean state){
-        Device device = Device.findById(id);
-
-        device.set("on", state);
-        device.saveIt();
+    @GET 
+    public void on()  { 
+        this.switchState(param("id") ,true);
     }
 
-    @GET public void on()  { 
-        switchState(param("id") ,true);
+    @GET 
+    public void off() { 
+        this.switchState(param("id") ,false);
     }
 
-    @GET public void off() { 
-        switchState(param("id") ,false);
-    }
-
-
-    /* Set time to switch on and off */
+    /**
+     * Receive the cron times to be set on unique device
+     * @param crons The time to set a cron to swtich on the device
+     */
+    @GET
     public void setTimes() {
         List<DeviceCron> crons = DeviceCron.where("device_id = ?", param("deviceId"));
         List<String> cronsAssigned = params("crons");
@@ -81,9 +83,15 @@ public class DevicesController extends AppController {
         device.set("time", param(time));
     }
 
+    /**
+     * Verify if there is any device to be switched on
+     * 
+     * @return a list of devices to be switched on
+     */
+    @GET
     public void verifyTime() {
         User user = (User) session("loggedUser");
-        List<Device> userDevices = user.get("devices");
+        List<Device> userDevices = user.getAll(Device.class);
         List<Integer> devices2SwitchOn = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
@@ -91,24 +99,34 @@ public class DevicesController extends AppController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         
         for (Device device : userDevices) {
-            List<DeviceCron> deviceCrons = device.get("crons");
+            List<DeviceCron> deviceCrons = device.getAll(DeviceCron.class);
 
             for (DeviceCron cron : deviceCrons) {
                 calendar.setTime(dateFormat.parse(cron.get("time"));
                 int cronMillis = calendar.get(Calendar.MILLISECOND);
 
                 if (currentMillis >= cronMillis) {
-                    switchState(device.get("id"), true);
+                    this.switchState((int) device.get("id"), true);
                     break;
                 }
+            }
 
-                if(((boolean) device.get("on"))) {
-                    devices2SwitchOn.add(device.get("id"));
-                }
+            if(((boolean) device.get("on"))) {
+                devices2SwitchOn.add((int) device.get("id"));
             }
         }
 
-        respond(devices2SwitchOn);
+        String json = (new Gson()).toJson(devices2SwitchOn.toArray());
+        respond(json).contentType("text/json").status(200);
+    }
+
+    /*=== NON ROUTED FUNCTIONS ===*/
+    /* Switch on and off */
+    public void switchState(int id, boolean state){
+        Device device = Device.findById(id);
+
+        device.set("on", state);
+        device.saveIt();
     }
 
 }
