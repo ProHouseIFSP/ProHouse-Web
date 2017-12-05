@@ -89,15 +89,17 @@ public class DevicesController extends AppController {
      * @return a list of devices to be switched on
      */
     @GET
-    public void verifyTime() {
+    public void verify() {
         User user = (User) session("loggedUser");
         List<Device> userDevices = user.getAll(Device.class);
         List<Integer> devices2SwitchOn = new ArrayList<>();
+		List<Integer> devices2SwitchOff = new ArrayList<>();
+		Map<String, List> devices2Switch = new HashMap<>;
 
         Calendar calendar = Calendar.getInstance();
         int currentMillis = calendar.get(Calendar.MILLISECOND);
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        
+
         for (Device device : userDevices) {
             List<DeviceCron> deviceCrons = device.getAll(DeviceCron.class);
 
@@ -113,10 +115,15 @@ public class DevicesController extends AppController {
 
             if(((boolean) device.get("on"))) {
                 devices2SwitchOn.add((int) device.get("id"));
+            } else {
+                devices2SwitchOff.add((int) device.get("id"));
             }
         }
 
-        String json = (new Gson()).toJson(devices2SwitchOn.toArray());
+		devices2Switch.add("ligar", devices2SwitchOn.toArray());
+		devices2Switch.add("desligar", devices2SwitchOff.toArray());
+		
+        String json = new Gson().toJson(devices2Switch);
         respond(json).contentType("text/json").status(200);
     }
 
