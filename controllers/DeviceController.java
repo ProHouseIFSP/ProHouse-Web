@@ -20,7 +20,7 @@ public class DevicesController extends AppController {
         Device.createIt(
             "name", param("name"),
             "type", param("type"),
-            "on"  , false
+            "status"  , false
         );
     }
 
