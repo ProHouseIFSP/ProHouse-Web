@@ -26,6 +26,8 @@ public class UserController extends AppController {
 
     @GET
     public void getQRCode() {
+	Config config = Config.getInstance();
+
         long timeToDelete = System.currentTimeInMillis() + config.LoginExpirationTime;
         String filename = String.valueOftimeToDelete + ".png";
     	
@@ -37,9 +39,18 @@ public class UserController extends AppController {
     public void login() {
         if(session("QRCode") < System.currentTimeInMillis()) {
             flash("error", "O tempo de login expirou, tente novamente");
+	    this.getQRCode();
         } else {
-            // Teste o login
+           String login = param("QRCode");
+	   User user = User.where("username = ?", param("user")).first();
+
+	   if (login.equals(session("QRCode"))){
+	   	session("user", user);
+	   } else {
+	   	flash("error", "Não foi possível fazer o login, tente novamente");
+	   }
         }
     }
+
 }
     
