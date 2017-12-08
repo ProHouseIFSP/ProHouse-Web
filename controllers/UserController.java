@@ -23,5 +23,23 @@ public class UserController extends AppController {
         flash("message","Usuário e/ou senha incorretos");
         redirect();
     }
+
+    @GET
+    public void getQRCode() {
+        long timeToDelete = System.currentTimeInMillis() + config.LoginExpirationTime;
+        String filename = String.valueOftimeToDelete + ".png";
+    	
+        new QRCodeGenerator().generate(filename, "login");
+        session("QRCode", timeToDelete);
+    }
+
+    @POST
+    public void login() {
+        if(session("QRCode") < System.currentTimeInMillis()) {
+            flash("error", "O tempo de login expirou, tente novamente");
+        } else {
+            // Teste o login
+        }
+    }
 }
     
