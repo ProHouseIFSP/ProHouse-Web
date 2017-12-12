@@ -18,18 +18,19 @@ public class DevicesController extends AppController {
     @POST
     public void save() {
         Device.createIt(
-            "name", param("name"),
-            "type", param("type"),
-            "status"  , false
+            "nome", param("name"),
+            "ip", param("ip"),
+            "usuario_id", session("user").id
+            // ,"status", false
         );
     }
 
-    @GET 
+    @GET
     public void edit() {
         view("device", Device.findById(param("id")));
     }
 
-    @POST 
+    @POST
     public void update() {
         Device device = Device.findById(param("id"));
 
@@ -37,17 +38,17 @@ public class DevicesController extends AppController {
         device.saveIt();
     }
 
-    @GET 
+    @GET
     public void delete() {
         Device.findById(param("id")).delete();
     }
 
-    @GET 
+    @GET
     public void on()  { 
         this.switchState(param("id") ,true);
     }
 
-    @GET 
+    @GET
     public void off() { 
         this.switchState(param("id") ,false);
     }
