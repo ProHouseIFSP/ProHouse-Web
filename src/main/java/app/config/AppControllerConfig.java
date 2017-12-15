@@ -35,6 +35,5 @@ public class AppControllerConfig extends AbstractControllerConfig {
         );
         
 
-        context.set("text", "asdasd");
     }
 }
