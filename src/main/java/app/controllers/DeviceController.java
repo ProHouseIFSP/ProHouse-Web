@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Map.Entry;
 import org.javalite.activeweb.AppController;
 import org.javalite.activeweb.annotations.DELETE;
 import org.javalite.activeweb.annotations.POST;
@@ -33,10 +33,10 @@ public class DeviceController extends AppController {
     public void save() {
         User loggedUser = (User) session("loggedUser");
         Device.createIt(
-            "nome", param("name"),
+            "nome", param("nome"),
             "ip", param("ip"),
-            "usuario_id", (int) loggedUser.get("id")
-            // ,"status", false
+            "status", false
+            //"usuario_id", (int) loggedUser.get("id")
         );
     }
 
