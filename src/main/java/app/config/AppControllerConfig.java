@@ -19,8 +19,9 @@ import org.javalite.activeweb.AbstractControllerConfig;
 import org.javalite.activeweb.AppContext;
 import org.javalite.activeweb.controller_filters.DBConnectionFilter;
 import org.javalite.activeweb.controller_filters.TimingFilter;
-import app.controllers.BooksController;
-import app.controllers.DeviceController;
+
+import app.controllers.UserController;
+import app.filters.AuthFilter;
 
 
 /**
@@ -33,7 +34,11 @@ public class AppControllerConfig extends AbstractControllerConfig {
             new TimingFilter(), 
             new DBConnectionFilter()
         );
-        
 
+        addGlobalFilters(new AuthFilter()).exceptFor(UserController.class);
+
+        add(new AuthFilter())
+            .to(UserController.class)
+            .excludeActions("commonLogin", "index", "pass");
     }
 }

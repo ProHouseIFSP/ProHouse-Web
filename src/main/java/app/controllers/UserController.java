@@ -10,26 +10,30 @@ import app.services.QRCodeGenerator;
 
 public class UserController extends AppController {
 
+    public void index(){
+        if(getId() != null){
+            flash("pass", Password.hashPassword(getId()));
+        }
+    }
+
     @POST
     public void commonLogin() {      
         if(blank("username", "password")){
             flash("message", "Preencha os campos de usuário e senha");
-            redirect();
+            redirect(UserController.class, "index");
         }
 
         String username = param("username");
         String password = param("password");
-        User user = User.findFirst("username = ?", username);
+        User user = User.findFirst("usuario = ?", username);
 
-        if(user != null) {
-            if (Password.checkPassword(password, (String) user.get("password"))){
-                session("userLogged", user);
-                redirect(DeviceController.class);
-            }
+        if (user != null && Password.checkPassword(password, (String) user.get("senha"))){
+            session("user", user);
+            redirect(DeviceController.class, "index");
+        } else {
+            flash("message","Usuário e/ou senha incorretos");
+            redirect(UserController.class, "index");
         }
-
-        flash("message","Usuário e/ou senha incorretos");
-        redirect();
     }
 
     public void getQRCode() {
