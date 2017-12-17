@@ -17,14 +17,17 @@
     </h2>
 </section>
 
-<nav class="navbar" style="box-shadow: 0 2px 3px 0px rgba(0,0,0,.2)">
-    <div class="navbar-menu container">
-        <div class="navbar-start">
-            <a class="navbar-item" href="#">Equipamentos</a>
+
+<#if (session.user) ??>
+    <nav class="navbar" style="box-shadow: 0 2px 3px 0px rgba(0,0,0,.2)">
+        <div class="navbar-menu container">
+            <div class="navbar-start">
+                <a class="navbar-item" href="#">Equipamentos</a>
+            </div>
+            
+            <div class="navbar-end">
+                <a class="navbar-item">Sair</a>
+            </div>
         </div>
-        
-        <div class="navbar-end">
-            <a class="navbar-item">Sair</a>
-        </div>
-    </div>
-</nav>
+    </nav>
+</#if>
