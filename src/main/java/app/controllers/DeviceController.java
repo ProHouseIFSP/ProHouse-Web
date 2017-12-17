@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.javalite.activejdbc.LazyList;
+import org.javalite.activejdbc.Model;
 import org.javalite.activeweb.AppController;
 import org.javalite.activeweb.annotations.DELETE;
 import org.javalite.activeweb.annotations.POST;
@@ -28,7 +29,16 @@ public class DeviceController extends AppController {
         view("devices", Device.where("usuario_id").toMaps());
     }
 
-    public void create() { /* it's empty just to create the route to view */ }
+    public void create() { 
+        LazyList<Model> devices = Device.where("usuario_id = ?", ((User) session("user")).get("id"));
+
+        if(devices.size() >= 1) {
+            flash("error", "Atualmente o sistema não permite o cadastro de mais de um equipamento, aguarde atualizções");
+            redirect(DeviceController.class, "index");
+        }
+        
+    }
+
     public void show() { 
         Device device = Device.findById(getId());
         view("equipamento", device);
@@ -41,7 +51,11 @@ public class DeviceController extends AppController {
     }
 
     @POST
-    public void save() {        
+    public void save() {
+        if(getId() != null){
+            this.update();
+        }
+
         Device device = new Device();
         device.fromMap(params1st());
         device.set("usuario_id", ((User) session("user")).get("id"));
@@ -54,28 +68,33 @@ public class DeviceController extends AppController {
             return;
         }
 
-        flash("success", "Novo equipamento " + device.get("nome") + "adicionado!");
-        redirect(DeviceController.class, "create");
+        flash("success", "Novo equipamento " + device.get("nome") + " adicionado!");
+        redirect(DeviceController.class, "index");
     }
 
     public void edit() {
-        view("device", Device.findById(getId()));
+        view("equipamento", Device.findById(getId()));
+        view("edit",true);
 
         render("create");
     }
 
     @POST
     public void update() {
-        Device device = Device.findById(getId());
-        Map<String, String[]> params = params();
+        Device device = new Device();
+        device.fromMap(params1st());
+        device.set("usuario_id", ((User) session("user")).get("id"));
 
-        // for(Entry<String, String[]> param : params.entrySet()){
-        //     device.set(param.getKey(), param.getValue());
-        // }
-        params.forEach((k,v) -> device.set(k,v));
+        if(!device.save()){
+            flash("error", "Algo deu errado, preencha todos os campos corretamente");
+            flash("errors", device.errors());
+            flash("params", params1st());
+            redirect(DeviceController.class, "edit", getId());
+            return;
+        }
 
-        device.saveIt();
-        setTimes((String) device.get("id"));
+        flash("success", "Equipamento " + device.get("nome") + " atualizado!");
+        redirect(DeviceController.class, "index");
     }
 
     @DELETE
