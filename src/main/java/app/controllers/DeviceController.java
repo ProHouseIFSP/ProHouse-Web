@@ -143,9 +143,9 @@ public class DeviceController extends AppController {
     /*=== NON ROUTED FUNCTIONS ===*/
     /* Switch on and off */
     public void switchState(Object id, boolean state){
-        Device device = Device.findById((int) id);
+        Device device = Device.findById(id.toString());
 
-        device.set("on", state);
+        device.set("status", state);
         device.saveIt();
     }
 

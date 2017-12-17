@@ -54,13 +54,13 @@
                     <environments>${environments}</environments>
                 </configuration>
                 <executions>
-                    <execution>
+<!--                    <execution>
                         <id>dev_migrations</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>migrate</goal>
                         </goals>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
 
