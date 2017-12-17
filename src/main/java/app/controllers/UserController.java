@@ -21,7 +21,8 @@ public class UserController extends AppController {
     }
 
     public void logout(){
-        
+        session().remove("user");
+        redirect(UserController.class, "index");
     }
 
     @POST
