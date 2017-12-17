@@ -19,7 +19,7 @@
         </init-param>
         <init-param>
             <param-name>root_controller</param-name>
-            <param-value>home</param-value>
+            <param-value>user</param-value>
         </init-param>
     </filter>
 
