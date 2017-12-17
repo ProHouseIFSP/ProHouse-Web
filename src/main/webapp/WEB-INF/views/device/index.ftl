@@ -34,11 +34,11 @@
 
             <td style="width: 10px">
                 <#if (device.status == "1")>
-                    <@form action="off" method="post">
+                    <@form action="off" method="post" id=device.id html_id=device.id>
                         <button class="button is-danger" type="submit">Desligar</button>
                     </@form>
                 <#else/>
-                    <@form action="on" method="post">
+                    <@form action="on" method="post" id=device.id html_id=device.id>
                         <button class="button is-success" type="submit">Ligar</button>
                     </@form>
                 </#if>        
