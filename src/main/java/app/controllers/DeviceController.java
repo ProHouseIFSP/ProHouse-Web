@@ -24,29 +24,40 @@ import app.models.User;
 public class DeviceController extends AppController {
  
     public void index() {
-        view("devices", Device.findAll().toMaps());
+        view("devices", Device.where("usuario_id").toMaps());
     }
 
     public void create() { /* it's empty just to create the route to view */ }
 
     @POST
     public void save() {
-        User loggedUser = (User) session("loggedUser");
-        Device.createIt(
-            "nome", param("nome"),
-            "ip", param("ip"),
-            "status", false
-            //"usuario_id", (int) loggedUser.get("id")
-        );
+        User loggedUser = (User) session("user");
+        
+        Device device = new Device();
+        device.fromMap(params1st());
+        device.set("usuario_id", ((User) session("user")).get("id"));
+
+        if(!device.save()){
+            flash("error", "Algo deu errado, preencha todos os campos corretamente");
+            flash("errors", device.errors());
+            flash("params", params1st());
+            redirect(DeviceController.class, "create");
+            return;
+        }
+
+        flash("success", "Novo equipamento " + device.get("nome") + "adicionado!");
+        redirect(DeviceController.class, "create");
     }
 
     public void edit() {
-        view("device", Device.findById(param("id")));
+        view("device", Device.findById(getId()));
+
+        render("create");
     }
 
     @POST
     public void update() {
-        Device device = Device.findById(param("id"));
+        Device device = Device.findById(getId());
         Map<String, String[]> params = params();
 
         // for(Entry<String, String[]> param : params.entrySet()){
@@ -55,19 +66,21 @@ public class DeviceController extends AppController {
         params.forEach((k,v) -> device.set(k,v));
 
         device.saveIt();
+        setTimes((String) device.get("id"));
     }
 
     @DELETE
     public void delete() {
-        Device.findById(param("id")).delete();
+        Device.findById(getId()).delete();
+        redirect();
     }
 
     /**
      * Receive the cron times to be set on unique device
      * @param crons The time to set a cron to swtich on the device
      */
-    public void setTimes() {
-        List<DeviceCron> crons = DeviceCron.where("device_id = ?", param("deviceId"));
+    public void setTimes(String deviceId) {
+        List<DeviceCron> crons = DeviceCron.where("device_id = ?", deviceId);
         List<String> cronsAssigned = params("crons");
         int existingCronsCount = crons.size();
 
@@ -96,7 +109,7 @@ public class DeviceController extends AppController {
      * @return a list of devices to be switched on
      */
     public void verify() {
-        User user = (User) session("loggedUser");
+        User user = (User) session("user");
         List<Device> userDevices = user.getAll(Device.class);
         List<Integer> devices2SwitchOn = new ArrayList<>();
 		List<Integer> devices2SwitchOff = new ArrayList<>();
@@ -137,15 +150,15 @@ public class DeviceController extends AppController {
     }
 
 
-    public void on()  { this.switchState(param("id"), true); }
-    public void off() { this.switchState(param("id"), false); }
+    @POST public void on()  { this.switchState(param("id"), true); redirect(DeviceController.class, "index"); }
+    @POST public void off() { this.switchState(param("id"), false); redirect(DeviceController.class, "index"); }
     
     /*=== NON ROUTED FUNCTIONS ===*/
     /* Switch on and off */
     public void switchState(Object id, boolean state){
-        Device device = Device.findById((int) id);
+        Device device = Device.findById(Integer.parseInt((String) id));
 
-        device.set("on", state);
+        device.set("status", state);
         device.saveIt();
     }
 
