@@ -24,14 +24,14 @@
     
     <li>
         <@form id=equipamento.id action="saveCron" method="post" html_id=equipamento.id>
-            <div class="columns">
-                <div class="column is-2">
+            <div class="columns is-mobile">
+                <div class="column is-2-dekstop is-two-thirds-mobile">
                     <div class="control">
                         <input name="time" type="time" class="input">
                     </div>
                 </div>
-                <div class="column is-2">
-                    <button class="button is-success" type="submit">+</button>
+                <div class="column is-2-dekstop is-one-third-mobile">
+                    <button class="button is-success " type="submit">+</button>
                 </div>
             </div>
         </@form>

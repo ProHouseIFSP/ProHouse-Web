@@ -1,6 +1,6 @@
 <@content for="title">Novo equipamento</@content>
 
-<@form id=(equipamento.id)!null action="save" method="post" class="main-form">
+<@form id=(equipamento.id)!null action="save" method="post">
 
     <#if (equipamento)??>
         <h2 class="title is-4">Editar Equipamento</h2>

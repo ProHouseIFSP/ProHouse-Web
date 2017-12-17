@@ -1,8 +1,9 @@
-<#setting url_escaping_charset='ISO-8859-1'>
+<#setting url_escaping_charset='UTF-8'>
 
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="${context_path}/js/jquery-1.4.2.min.js" type="text/javascript"></script>
     <script src="${context_path}/js/aw.js" type="text/javascript"></script>
     <link href="${context_path}/css/bulma.min.css" rel="stylesheet" type="text/css">
@@ -14,21 +15,20 @@
 <div class="main">
 
     <#include "header.ftl">
-    <div class="container" style="margin: 20px auto">
-    
-    <@flash name="message">
-        <div class="notification is-info"><@flash name="message"/></div>
-    </@flash>
-    
-    <@flash name="error">
-        <div class="notification is-danger"><@flash name="error"/></div>
-    </@flash>
+    <div class="container" style="margin: 20px auto; padding: 0 10px ;" class="main-form">
+        <@flash name="message">
+            <div class="notification is-info"><@flash name="message"/></div>
+        </@flash>
+        
+        <@flash name="error">
+            <div class="notification is-danger"><@flash name="error"/></div>
+        </@flash>
 
-    <@flash name="success">
-        <div class="notification is-success"><@flash name="success"/></div>
-    </@flash>
-    
-    ${page_content}
+        <@flash name="success">
+            <div class="notification is-success"><@flash name="success"/></div>
+        </@flash>
+        
+        ${page_content}
     </div>
 </div>
 
