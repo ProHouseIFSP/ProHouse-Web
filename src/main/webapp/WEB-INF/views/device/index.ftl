@@ -12,7 +12,7 @@
             <th>Equipamento</th>
             <th>IP</th>
             <th>Estado</th>
-            <th colspan="3">Ações</th>
+            <th colspan="4">Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -48,6 +48,12 @@
                 <@link_to action="show" id=device.id class="button is-info">
                     Programar horário
                 </@link_to>
+            </td>
+
+            <td style="width: 10px">
+                <@form id=device.id action="edit" method="get" html_id=device.id >
+                    <button class="button is-warning" type="submit">Editar</button>
+                </@form>
             </td>
 
             <td style="width: 10px">
