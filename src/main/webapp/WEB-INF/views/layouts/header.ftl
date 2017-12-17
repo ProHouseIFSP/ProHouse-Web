@@ -22,11 +22,11 @@
     <nav class="navbar" style="box-shadow: 0 2px 3px 0px rgba(0,0,0,.2)">
         <div class="navbar-menu container">
             <div class="navbar-start">
-                <a class="navbar-item" href="#">Equipamentos</a>
+                <a class="navbar-item" href="${context_path}/device">Equipamentos</a>
             </div>
             
             <div class="navbar-end">
-                <a class="navbar-item">Sair</a>
+                <a class="navbar-item" href="${context_path}/user/logout">Sair</a>
             </div>
         </div>
     </nav>
