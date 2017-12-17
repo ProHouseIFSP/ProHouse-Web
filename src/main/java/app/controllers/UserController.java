@@ -14,6 +14,10 @@ public class UserController extends AppController {
         if(getId() != null){
             flash("pass", Password.hashPassword(getId()));
         }
+
+        if(session("user") != null){
+            redirect(DeviceController.class, "index");
+        }
     }
 
     @POST
