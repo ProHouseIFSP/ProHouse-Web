@@ -20,6 +20,10 @@ public class UserController extends AppController {
         }
     }
 
+    public void logout(){
+        
+    }
+
     @POST
     public void commonLogin() {      
         if(blank("username", "password")){
