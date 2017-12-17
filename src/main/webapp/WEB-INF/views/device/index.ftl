@@ -45,9 +45,9 @@
             </td>
 
             <td style="width: 10px">
-                <@form action="newCron" method="post">
-                    <button class="button is-info" type="submit">Programar horário</button>
-                </@form>
+                <@link_to action="show" id=device.id class="button is-info">
+                    Programar horário
+                </@link_to>
             </td>
 
             <td style="width: 10px">
