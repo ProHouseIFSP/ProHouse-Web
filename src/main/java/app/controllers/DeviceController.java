@@ -7,7 +7,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import org.javalite.activejdbc.LazyList;
 import org.javalite.activeweb.AppController;
 import org.javalite.activeweb.annotations.DELETE;
 import org.javalite.activeweb.annotations.POST;
@@ -28,11 +29,19 @@ public class DeviceController extends AppController {
     }
 
     public void create() { /* it's empty just to create the route to view */ }
+    public void show() { 
+        Device device = Device.findById(getId());
+        view("equipamento", device);
+        
+        LazyList<DeviceCron> crons = device.getAll(DeviceCron.class);
+
+        if(crons.size() > 0){
+            view("horarios", crons);
+        }
+    }
 
     @POST
-    public void save() {
-        User loggedUser = (User) session("user");
-        
+    public void save() {        
         Device device = new Device();
         device.fromMap(params1st());
         device.set("usuario_id", ((User) session("user")).get("id"));
@@ -73,6 +82,23 @@ public class DeviceController extends AppController {
     public void delete() {
         Device.findById(getId()).delete();
         redirect();
+    }
+
+    @POST
+    public void saveCron(){
+        DeviceCron.createIt(
+            "equipamento_id", getId(),
+            "horario", param("time")
+        );
+
+        redirect(DeviceController.class, "show", getId());
+    }
+
+    @DELETE
+    public void deleteCron(){
+        DeviceCron.findById(param("cron")).delete();
+
+        redirect(DeviceController.class, "show", getId());
     }
 
     /**
